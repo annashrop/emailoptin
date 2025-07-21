@@ -49,7 +49,7 @@ clubs.forEach(c => {
 db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
     const links = snapshot.val();
     if (links && links.length > 0) {
-        let linkHTML = '<h3>Helpful Links:</h3><ul>';
+        let linkHTML = '<h3>Email Preview Links:</h3><ul>';
         links.forEach(link => {
             linkHTML += `<li><a href="${link.url}" target="_blank">${link.label}</a></li>`;
         });
