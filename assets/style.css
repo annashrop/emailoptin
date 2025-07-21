@@ -99,12 +99,3 @@ iframe {
     border-radius: 8px;
 }
 
-<iframe src="${link.url}" style="
-    width: 100%; 
-    height: 600px; 
-    border: 1px solid #ccc; 
-    border-radius: 8px;
-    transform: scale(1.1);
-    transform-origin: top left;
-    overflow: hidden;
-"></iframe>
