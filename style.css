@@ -1,0 +1,19 @@
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #f8f9fa;
+    color: #333;
+    margin: 20px;
+}
+button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+}
+.optin { background: #4CAF50; color: white; }
+.optout { background: #F44336; color: white; }
+.status-in { color: #4CAF50; }
+.status-out { color: #F44336; }
+.status-none { color: #999; }
