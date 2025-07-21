@@ -10,6 +10,8 @@
 <h2>Campaign Opt-In</h2>
 <p id="campaignName"></p>
 
+<div id="campaignLinks"></div><br> <!-- ADD THIS -->
+
 <input type="text" id="clubInput" placeholder="Start typing your club name..." list="clubs" />
 <datalist id="clubs"></datalist>
 <br><br>
@@ -27,12 +29,15 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 <script src="firebase-init.js"></script>
-<script src="../assets/clubs.js"></script>
+<script src="assets/clubs.js"></script>
+
 <script>
+// Get campaign from URL
 const params = new URLSearchParams(window.location.search);
 const campaign = params.get('campaign');
 document.getElementById('campaignName').innerText = 'Campaign: ' + campaign;
 
+// Autocomplete Club Names
 const datalist = document.getElementById('clubs');
 clubs.forEach(c => {
     const option = document.createElement('option');
@@ -40,15 +45,8 @@ clubs.forEach(c => {
     datalist.appendChild(option);
 });
 
-function submitChoice(choice) {
-    const clubName = document.getElementById('clubInput').value;
-    const notes = document.getElementById('notes').value;
-    const clubObj = clubs.find(c => c.name === clubName);
-    if (!clubObj) {
-        alert('Please select a valid club.');
-        return;
-    }
-   db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
+// Load Helpful Links at Page Load
+db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
     const links = snapshot.val();
     if (links && links.length > 0) {
         let linkHTML = '<h3>Helpful Links:</h3><ul>';
@@ -58,6 +56,23 @@ function submitChoice(choice) {
         linkHTML += '</ul>';
         document.getElementById('campaignLinks').innerHTML = linkHTML;
     }
+});
+
+// Submit Opt-In/Opt-Out Choice
+function submitChoice(choice) {
+    const clubName = document.getElementById('clubInput').value;
+    const notes = document.getElementById('notes').value;
+    const clubObj = clubs.find(c => c.name === clubName);
+    if (!clubObj) {
+        alert('Please select a valid club.');
+        return;
+    }
+
+    db.ref('campaigns/' + campaign + '/' + clubName).set({
+        status: choice,
+        notes: notes,
+        region: clubObj.region,
+        timestamp: new Date().toISOString()
     });
 }
 
@@ -78,5 +93,7 @@ db.ref('campaigns/' + campaign).on('value', snapshot => {
     });
 });
 </script>
+
 </body>
+
 </html>
