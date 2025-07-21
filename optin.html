@@ -48,11 +48,16 @@ function submitChoice(choice) {
         alert('Please select a valid club.');
         return;
     }
-    db.ref('campaigns/' + campaign + '/' + clubName).set({
-        status: choice,
-        notes: notes,
-        region: clubObj.region,
-        timestamp: new Date().toISOString()
+   db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
+    const links = snapshot.val();
+    if (links && links.length > 0) {
+        let linkHTML = '<h3>Helpful Links:</h3><ul>';
+        links.forEach(link => {
+            linkHTML += `<li><a href="${link.url}" target="_blank">${link.label}</a></li>`;
+        });
+        linkHTML += '</ul>';
+        document.getElementById('campaignLinks').innerHTML = linkHTML;
+    }
     });
 }
 
