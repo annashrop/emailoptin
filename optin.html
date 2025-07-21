@@ -48,39 +48,46 @@ clubs.forEach(c => {
 // Load Helpful Links at Page Load
 db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
     const links = snapshot.val();
-    if (links && links.length > 0) {
-        let linkHTML = '<h3>Email Previews:</h3>';
-        links.forEach(link => {
-            linkHTML += `
-                <h4>${link.label}</h4>
-                <iframe src="${link.url}" width="100%" height="500px" 
-                    style="border:1px solid #ccc; margin-bottom:20px;"></iframe>
-                <p style="margin-bottom:30px;">
-                    <a href="${link.url}" target="_blank">Open ${link.label} in new tab</a>
-                </p>
-            `;
-        });
-        document.getElementById('campaignLinks').innerHTML = linkHTML;
+   let linkHTML = '<h3>Email Previews:</h3>';
+links.forEach(link => {
+    linkHTML += `
+        <div class="preview-card">
+            <h4>${link.label}</h4>
+            <iframe src="${link.url}" width="100%" height="500px" style="border:1px solid #ccc; border-radius:8px; margin-bottom:10px;"></iframe><br>
+            <button onclick="submitChoice('${link.label}', 'Opt In')">Opt In</button>
+            <button onclick="submitChoice('${link.label}', 'Opt Out')">Opt Out</button>
+        </div><br>
+    `;
+});
+document.getElementById('campaignLinks').innerHTML = linkHTML;
+
     }
 });
 
 // Submit Opt-In/Opt-Out Choice
-function submitChoice(choice) {
+function submitChoice(linkLabel, choice) {
     const clubName = document.getElementById('clubInput').value;
     const notes = document.getElementById('notes').value;
     const clubObj = clubs.find(c => c.name === clubName);
+
     if (!clubObj) {
-        alert('Please select a valid club.');
+        alert('Please select a valid club before making choices.');
         return;
     }
 
-    db.ref('campaigns/' + campaign + '/' + clubName).set({
-        status: choice,
+    const responsePath = `campaigns/${campaign}/${clubName}/responses/${linkLabel}`;
+    db.ref(responsePath).set(choice);
+
+    // Save notes and meta data too
+    db.ref(`campaigns/${campaign}/${clubName}`).update({
         notes: notes,
         region: clubObj.region,
         timestamp: new Date().toISOString()
     });
+
+    alert(`You selected "${choice}" for "${linkLabel}".`);
 }
+
 
 // Real-time region status
 db.ref('campaigns/' + campaign).on('value', snapshot => {
