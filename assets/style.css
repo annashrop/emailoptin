@@ -5,6 +5,19 @@ body {
     color: #fff;
     margin: 20px;
 }
+.page-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff; /* Keep it white for the dark background */
+}
+
+.campaign-name {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #fff; /* Optional: white text for contrast */
+}
 button {
     padding: 10px 20px;
     border-radius: 5px;
