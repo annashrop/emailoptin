@@ -137,3 +137,13 @@ iframe {
     margin-bottom: 20px;
     color: #333; /* Text stays dark inside cards */
 }
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    color: #333;
+} 
