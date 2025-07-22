@@ -31,13 +31,6 @@ button {
 .status-out { color: #F44336; }
 .status-none { color: #999; }
 
-body {
-    font-family: 'Source Sans Pro', Arial, sans-serif;
-    background: #F8F9FA;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-}
 
 .container {
     max-width: 900px;
