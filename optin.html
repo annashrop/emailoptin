@@ -91,9 +91,12 @@
 
     // Save choice in global memory
     if (!window.choiceStore[label]) {
-      window.choiceStore[label] = {};
-    }
-    window.choiceStore[label][clubName] = choice;
+  window.choiceStore[label] = {};
+}
+window.choiceStore[label][club] = {
+  choice: choice,
+  timestamp: new Date().toISOString()
+};
 
     // Save to Firebase
     const path = `responses/${campaign}/${label}/${clubName}`;
