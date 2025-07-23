@@ -105,9 +105,10 @@ db.ref('campaigns/' + campaign).on('value', snapshot => {
     });
 });
 </script>
-    <script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import { getDatabase, ref, set, update, child, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
 
   const firebaseConfig = {
   apiKey: "AIzaSyCXrZyRjTDmwxYRNNXvbtnc0eLNdbxmPXM",
@@ -122,39 +123,71 @@ db.ref('campaigns/' + campaign).on('value', snapshot => {
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const dbRef = ref(db);
 
-  async function populateClubList() {
-    const dbRef = ref(db);
-    try {
-      const snapshot = await get(child(dbRef, "masterClubs"));
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        let allClubs = [];
+  let allClubs = [];
 
-        for (const region in data) {
-          const regionClubs = data[region];
-          if (Array.isArray(regionClubs)) {
-            allClubs = allClubs.concat(regionClubs);
-          }
-        }
 
-        allClubs.sort();
-        const datalist = document.getElementById("clubList");
-
-        allClubs.forEach(club => {
-          const option = document.createElement("option");
-          option.value = club;
-          datalist.appendChild(option);
+   async function populateClubList() {
+    const snapshot = await get(child(dbRef, "masterClubs"));
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const clubList = [];
+      for (const region in data) {
+        data[region].forEach(club => {
+          clubList.push({ name: club, region: region });
         });
       }
-    } catch (error) {
-      console.error("Error fetching club list:", error);
+
+      allClubs = clubList.sort((a, b) => a.name.localeCompare(b.name));
+      const datalist = document.getElementById("clubList");
+      datalist.innerHTML = allClubs.map(club => `<option value="${club.name}">`).join("");
     }
   }
 
   populateClubList();
-</script>
 
+  // ✅ Save opt-in/opt-out response
+  async function submitChoice(label, choice) {
+    const campaign = new URLSearchParams(window.location.search).get("campaign");
+    const clubName = document.getElementById("clubInput").value;
+    const notes = document.getElementById("notes").value.trim();
+
+    if (!clubName) {
+      alert("Please enter your club name.");
+      return;
+    }
+
+    const clubObj = allClubs.find(c => c.name === clubName);
+    if (!clubObj) {
+      alert("Invalid club name. Please select from the list.");
+      return;
+    }
+
+    const responsePath = `campaigns/${campaign}/${clubName}/responses/${label}`;
+
+    try {
+      // Save choice (Opt In / Opt Out)
+      await set(ref(db, responsePath), choice);
+
+      // Also update metadata
+      await update(ref(db, `campaigns/${campaign}/${clubName}`), {
+        notes: notes,
+        region: clubObj.region,
+        timestamp: new Date().toISOString()
+      });
+
+      alert(`You selected "${choice}" for "${label}"`);
+      document.getElementById("notes").value = "";
+    } catch (error) {
+      console.error("Firebase write failed:", error);
+      alert("There was an error saving your response. Please try again.");
+    }
+  }
+
+  // Expose submitChoice to global scope for button onclick
+  window.submitChoice = submitChoice;
+</script>
 
 </body>
 
