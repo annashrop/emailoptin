@@ -7,17 +7,32 @@
 <h2>Create New Campaign</h2>
 
 <input type="text" id="campaignName" placeholder="Campaign Name" /><br><br>
+    <label for="expirationDate">Opt-In Expiration Date:</label>
+<input type="date" id="expirationDate" name="expirationDate" />
+
 
 <h3>Optional Links:</h3>
 
 <label>Link 1 Label:</label><br>
 <input type="text" id="linkLabel1" placeholder="e.g., Member Facing Email Proof" /><br>
+    
+<label for="linkSubject1">Subject Line (Link 1):</label>
+<input type="text" id="linkSubject1" /><br>
+
+<label for="linkPreheader1">Pre-header (Link 1):</label>
+<input type="text" id="linkPreheader1" /><br><br>
 
 <label>Link 1 URL:</label><br>
 <input type="text" id="linkUrl1" placeholder="https://example.com/guide" /><br><br>
 
 <label>Link 2 Label:</label><br>
 <input type="text" id="linkLabel2" placeholder="e.g., Prospect Facing Email Proof" /><br>
+
+<label for="linkSubject2">Subject Line (Link 2):</label>
+<input type="text" id="linkSubject2" /><br>
+
+<label for="linkPreheader2">Pre-header (Link 2):</label>
+<input type="text" id="linkPreheader2" /><br><br>
 
 <label>Link 2 URL:</label><br>
 <input type="text" id="linkUrl2" placeholder="https://example.com/preview" /><br><br>
@@ -33,26 +48,46 @@
 <script>
 function createCampaign() {
     const campaign = document.getElementById('campaignName').value.trim();
+    const expirationDate = document.getElementById('expirationDate').value;
+
     if (!campaign) {
         alert("Please enter a campaign name.");
         return;
     }
 
     const links = [];
+
     const label1 = document.getElementById('linkLabel1').value.trim();
     const url1 = document.getElementById('linkUrl1').value.trim();
+    const subject1 = document.getElementById('linkSubject1').value.trim();
+    const preheader1 = document.getElementById('linkPreheader1').value.trim();
+
     if (label1 && url1) {
-        links.push({ label: label1, url: url1 });
+        links.push({
+            label: label1,
+            url: url1,
+            subject: subject1,
+            preheader: preheader1
+        });
     }
 
     const label2 = document.getElementById('linkLabel2').value.trim();
     const url2 = document.getElementById('linkUrl2').value.trim();
+    const subject2 = document.getElementById('linkSubject2').value.trim();
+    const preheader2 = document.getElementById('linkPreheader2').value.trim();
+
     if (label2 && url2) {
-        links.push({ label: label2, url: url2 });
+        links.push({
+            label: label2,
+            url: url2,
+            subject: subject2,
+            preheader: preheader2
+        });
     }
 
     db.ref('campaigns/' + campaign).set({
         createdAt: new Date().toISOString(),
+        expirationDate: expirationDate,
         links: links
     }).then(() => {
         const baseUrl = "https://annashrop.github.io/emailoptin/optin.html";
