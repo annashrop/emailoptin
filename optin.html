@@ -108,6 +108,55 @@ db.ref('campaigns/' + campaign).on('value', snapshot => {
     });
 });
 </script>
+    <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "emailoptin-be000.firebaseapp.com",
+    databaseURL: "https://emailoptin-be000-default-rtdb.firebaseio.com",
+    projectId: "emailoptin-be000",
+    storageBucket: "emailoptin-be000.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  async function populateClubList() {
+    const dbRef = ref(db);
+    try {
+      const snapshot = await get(child(dbRef, "masterClubs"));
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        let allClubs = [];
+
+        for (const region in data) {
+          const regionClubs = data[region];
+          if (Array.isArray(regionClubs)) {
+            allClubs = allClubs.concat(regionClubs);
+          }
+        }
+
+        allClubs.sort();
+        const datalist = document.getElementById("clubList");
+
+        allClubs.forEach(club => {
+          const option = document.createElement("option");
+          option.value = club;
+          datalist.appendChild(option);
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching club list:", error);
+    }
+  }
+
+  populateClubList();
+</script>
+
 
 </body>
 
