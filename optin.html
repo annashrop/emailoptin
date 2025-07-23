@@ -26,18 +26,33 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 
 <script>
-// Get campaign from URL
-const params = new URLSearchParams(window.location.search);
-const campaign = params.get('campaign');
-document.getElementById('campaignName').innerText = 'Campaign: ' + campaign;
+  // Get campaign name from URL
+  const params = new URLSearchParams(window.location.search);
+  const campaign = params.get('campaign');
+  document.getElementById('campaignName').innerText = 'Campaign: ' + campaign;
 
-// Autocomplete Club Names
-const datalist = document.getElementById('clubs');
-clubs.forEach(c => {
-    const option = document.createElement('option');
-    option.value = c.name;
-    datalist.appendChild(option);
-});
+  // Load all clubs from Firebase masterClubs
+  const datalist = document.getElementById('clubs');
+  let clubs = [];
+
+  db.ref('masterClubs').once('value').then(snapshot => {
+    const regions = snapshot.val();
+
+    // Flatten all region club arrays into one
+    Object.values(regions).forEach(regionClubs => {
+      clubs.push(...regionClubs);
+    });
+
+    // Sort alphabetically
+    clubs.sort();
+
+    // Populate datalist
+    clubs.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      datalist.appendChild(option);
+    });
+  });
 
 // Load Helpful Links at Page Load
 db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
