@@ -42,24 +42,25 @@ clubs.forEach(c => {
 // Load Helpful Links at Page Load
 db.ref('campaigns/' + campaign + '/links').once('value').then(snapshot => {
     const links = snapshot.val();
+    let linkHTML = '<h3>Email Previews:</h3><div class="preview-wrapper">';
 
-    if (links && links.length > 0) {
-        let linkHTML = '<h3>Email Previews:</h3><div class="previews-container">';
-links.forEach(link => {
-    linkHTML += `
-        <div class="preview-card">
-            <h4>${link.label}</h4>
-           <iframe src="${link.url}" width="100%" height="600px" style="border:1px solid #ccc; border-radius:8px; margin-bottom:10px;"></iframe>
-            <button class="button-optin" onclick="submitChoice('${link.label}', 'Opt In')">Opt In</button>
-            <button class="button-optout" onclick="submitChoice('${link.label}', 'Opt Out')">Opt Out</button>
+    links.forEach(link => {
+        linkHTML += `
+            <div class="preview-card">
+                <h4>${link.label}</h4>
+                <iframe src="${link.url}" width="100%" height="500px" style="border:1px solid #ccc; border-radius:8px; margin-bottom:10px;"></iframe>
+                <div class="button-row">
+                    <button onclick="submitChoice('${link.label}', 'Opt In')">Opt In</button>
+                    <button onclick="submitChoice('${link.label}', 'Opt Out')">Opt Out</button>
+                </div>
+            </div>
+        `;
+    });
 
-        </div>
-    `;
+    linkHTML += '</div>';
+    document.getElementById('campaignLinks').innerHTML = linkHTML;
 });
-linkHTML += '</div>'; // Close .previews-container
-document.getElementById('campaignLinks').innerHTML = linkHTML;
-   }
-});
+
         
 // Submit Opt-In/Opt-Out Choice
 function submitChoice(linkLabel, choice) {
