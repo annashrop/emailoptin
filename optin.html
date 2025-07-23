@@ -152,15 +152,19 @@ async function loadCampaignPreviews() {
     const links = snapshot.val();
     let html = '<div class="preview-container" style="display:flex;flex-wrap:wrap;gap:20px;">';
 
-    links.forEach(link => {
-html += `
-  <div class="preview-card" style="flex:1 1 45%;border:1px solid #ccc;border-radius:8px;padding:10px;">
-    <h4>${link.label}</h4>
-    <iframe src="${link.url}" width="100%" height="400px" style="border:1px solid #eee;margin-bottom:10px;"></iframe>
-    <button onclick="submitChoice('${link.label}', 'Opt In')" type="button" style="margin-right:10px;">Opt In</button>
-    <button onclick="submitChoice('${link.label}', 'Opt Out')" type="button">Opt Out</button>
-  </div>
-`;    });
+links.forEach(link => {
+  html += `
+    <div class="preview-card" style="flex:1 1 45%;border:1px solid #ccc;border-radius:8px;padding:10px;">
+      <h4>${link.label}</h4>
+      <p><strong>Subject Line:</strong> ${link.subjectLine || "N/A"}</p>
+      <p><strong>Preheader:</strong> ${link.preheader || "N/A"}</p>
+      <iframe src="${link.url}" width="100%" height="400px" style="border:1px solid #eee;margin-bottom:10px;"></iframe>
+      <button onclick="submitChoice('${link.label}', 'Opt In')" type="button" style="margin-right:10px;">Opt In</button>
+      <button onclick="submitChoice('${link.label}', 'Opt Out')" type="button">Opt Out</button>
+    </div>
+  `;
+});
+
 
     html += '</div>';
     document.getElementById("campaignLinks").innerHTML = html;
