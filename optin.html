@@ -22,7 +22,11 @@
 <table border="1" id="statusTable">
 <tr><th>Club</th><th>Status</th><th>Notes</th></tr>
 </table>
-
+<div id="summarySection">
+  <h3>Selections Summary</h3>
+  <div id="Link 1"><h4>Member Campaign</h4><ul></ul></div>
+  <div id="Link 2"><h4>Prospect Campaign</h4><ul></ul></div>
+</div>
 
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -133,6 +137,26 @@ loadCampaignPreviews();
 
   // Expose submitChoice to global scope for button onclick
   window.submitChoice = submitChoice;
+
+    function updateSummary() {
+  const memberList = document.querySelector('#memberSummary ul');
+  const prospectList = document.querySelector('#prospectSummary ul');
+  memberList.innerHTML = '';
+  prospectList.innerHTML = '';
+
+  for (const [label, data] of Object.entries(window.choiceStore.Member)) {
+    const li = document.createElement('li');
+    li.textContent = `${label}: ${data.choice}`;
+    memberList.appendChild(li);
+  }
+
+  for (const [label, data] of Object.entries(window.choiceStore.Prospect)) {
+    const li = document.createElement('li');
+    li.textContent = `${label}: ${data.choice}`;
+    prospectList.appendChild(li);
+  }
+}
+
 </script>
 
 </body>
