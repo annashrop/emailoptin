@@ -54,7 +54,12 @@
 </div>
 
 <script>
-   async function populateClubList() {
+  // ✅ Firebase setup should already be done above
+  const dbRef = firebase.database().ref();         // ✅ required
+  const { get, child } = firebase.database;        // ✅ required
+  let allClubs = [];                               // ✅ required
+
+  async function populateClubList() {
     const snapshot = await get(child(dbRef, "masterClubs"));
     if (snapshot.exists()) {
       const data = snapshot.val();
@@ -72,10 +77,9 @@
   }
 
   populateClubList();
-
-
-  // Global store for selections
   window.choiceStore = {};
+</script>
+  <script>
 
   function submitChoice(label, choice) {
     const urlParams = new URLSearchParams(window.location.search);
