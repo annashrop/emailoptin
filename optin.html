@@ -150,10 +150,18 @@ async function loadCampaignPreviews() {
   const campaign = new URLSearchParams(window.location.search).get("campaign");
   document.getElementById("campaignName").innerText = `Campaign: ${campaign}`;
 
-  const snapshot = await get(child(dbRef, `campaigns/${campaign}/links`));
-  if (snapshot.exists()) {
-    const links = snapshot.val();
-    let html = '<div class="preview-container" style="display:flex;flex-wrap:wrap;gap:20px;">';
+  const snapshot = await get(child(dbRef, `campaigns/${campaign}`));
+if (snapshot.exists()) {
+  const data = snapshot.val();
+  const links = data.links || [];
+  const expirationDate = data.expirationDate;
+
+  if (expirationDate) {
+    const expirationElement = document.getElementById("expirationDisplay");
+    if (expirationElement) {
+      expirationElement.textContent = `Opt-ins due by: ${new Date(expirationDate).toLocaleDateString()}`;
+    }
+  }
 
 links.forEach(link => {
   const subject = link.subject || 'N/A';
