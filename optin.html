@@ -179,40 +179,29 @@ function updateSummary() {
   memberSummary.innerHTML = '';
   prospectSummary.innerHTML = '';
 
-  // Member Summary
-  for (const [label, data] of Object.entries(window.choiceStore.Member)) {
-    const container = document.createElement('div');
-    container.classList.add('summary-block');
+  for (const [label, clubs] of Object.entries(window.choiceStore)) {
+    for (const [club, choice] of Object.entries(clubs)) {
+      const container = document.createElement('div');
+      container.classList.add('summary-block');
 
-    const title = document.createElement('h3');
-    title.textContent = `Summary for ${label}`;
-    container.appendChild(title);
+      const title = document.createElement('h3');
+      title.textContent = `Summary for ${label}`;
+      container.appendChild(title);
 
-    const list = document.createElement('ul');
-    const li = document.createElement('li');
-    li.textContent = `${label}: ${data.choice}`;
-    list.appendChild(li);
+      const list = document.createElement('ul');
+      const li = document.createElement('li');
+      li.textContent = `${club}: ${choice}`;
+      list.appendChild(li);
 
-    container.appendChild(list);
-    memberSummary.appendChild(container);
-  }
+      container.appendChild(list);
 
-  // Prospect Summary
-  for (const [label, data] of Object.entries(window.choiceStore.Prospect)) {
-    const container = document.createElement('div');
-    container.classList.add('summary-block');
-
-    const title = document.createElement('h3');
-    title.textContent = `Summary for ${label}`;
-    container.appendChild(title);
-
-    const list = document.createElement('ul');
-    const li = document.createElement('li');
-    li.textContent = `${label}: ${data.choice}`;
-    list.appendChild(li);
-
-    container.appendChild(list);
-    prospectSummary.appendChild(container);
+      // Append to correct summary section
+      if (label.toLowerCase().includes('prospect')) {
+        prospectSummary.appendChild(container);
+      } else {
+        memberSummary.appendChild(container);
+      }
+    }
   }
 }
 
