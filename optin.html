@@ -54,10 +54,7 @@
 </div>
 
 <script>
-  // ✅ Firebase setup should already be done above
-  const dbRef = firebase.database().ref();         // ✅ required
-  const { get, child } = firebase.database;        // ✅ required
-  let allClubs = [];                               // ✅ required
+
 
   async function populateClubList() {
     const snapshot = await get(child(dbRef, "masterClubs"));
@@ -99,7 +96,12 @@
 
     // Save to Firebase
     const path = `responses/${campaign}/${label}/${clubName}`;
-    db.ref(path).set(choice)
+    db.ref(path).set({
+        choice,
+        club: clubName,
+        campaign,
+        label
+    })
       .then(() => {
         console.log(`Saved ${choice} for ${clubName} under ${label}`);
       })
@@ -114,36 +116,29 @@
     updateSummary();
   }
 
-  function updateButtonStyles(label, clubName, choice) {
-    // Reset styles for all buttons for this label
-    document.querySelectorAll(`[data-label="${label}"]`).forEach(btn => {
-      btn.classList.remove('selected-opt-in', 'selected-opt-out');
-    });
+ function updateButtonStyles(label, clubName, choice) {
+  // Loop through all cards (preview containers)
+  const cards = document.querySelectorAll('.preview-card');
 
-    // Highlight selected button
-    const selectedBtn = document.querySelector(`[data-label="${label}"][data-choice="${choice}"]`);
-    if (selectedBtn) {
-      selectedBtn.classList.add(choice === 'Opt In' ? 'selected-opt-in' : 'selected-opt-out');
-    }
-  }
+  cards.forEach(card => {
+    // Check if this card contains the current label
+    const labelHeader = card.querySelector('h4');
+    if (labelHeader && labelHeader.textContent === label) {
+      // Reset both buttons in this card
+      card.querySelectorAll('button').forEach(btn => {
+        btn.classList.remove('selected-opt-in', 'selected-opt-out');
+      });
 
-  function updateSummary() {
-    const summaryDiv = document.getElementById('summary');
-    summaryDiv.innerHTML = '<h3>Submission Summary</h3>';
-
-    for (const [label, clubs] of Object.entries(window.choiceStore)) {
-      const section = document.createElement('div');
-      section.innerHTML = `<h4>${label}</h4>`;
-      const ul = document.createElement('ul');
-      for (const [club, choice] of Object.entries(clubs)) {
-        const li = document.createElement('li');
-        li.textContent = `${club}: ${choice}`;
-        ul.appendChild(li);
+      // Highlight the selected button in this card
+      const selectedBtn = card.querySelector(`button[data-label="${label}"][data-choice="${choice}"]`);
+      if (selectedBtn) {
+        selectedBtn.classList.add(choice === 'Opt In' ? 'selected-opt-in' : 'selected-opt-out');
       }
-      section.appendChild(ul);
-      summaryDiv.appendChild(section);
     }
-  }
+  });
+}
+
+  
 </script>
 <script>
 // Load and display campaign email previews + buttons
