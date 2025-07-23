@@ -69,44 +69,79 @@
   }
 
   populateClubList();
+  </script>
+  <script>
+  // Ensure Firebase is initialized here
+  const db = firebase.database();
 
-  // ✅ Save opt-in/opt-out response
-  async function submitChoice(label, choice) {
-    const campaign = new URLSearchParams(window.location.search).get("campaign");
-    const clubName = document.getElementById("clubInput").value;
-    const notes = document.getElementById("notes").value.trim();
+  // Global store for selections
+  window.choiceStore = {};
+
+  function submitChoice(label, choice) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const campaign = urlParams.get('campaign');
+    const clubName = document.getElementById('clubInput')?.value?.trim();
 
     if (!clubName) {
-      alert("Please enter your club name.");
+      alert("Please enter your club name before submitting a choice.");
       return;
     }
 
-    const clubObj = allClubs.find(c => c.name === clubName);
-    if (!clubObj) {
-      alert("Invalid club name. Please select from the list.");
-      return;
+    // Save choice in global memory
+    if (!window.choiceStore[label]) {
+      window.choiceStore[label] = {};
     }
+    window.choiceStore[label][clubName] = choice;
 
-    const responsePath = `campaigns/${campaign}/${clubName}/responses/${label}`;
-
-    try {
-      // Save choice (Opt In / Opt Out)
-      await set(ref(db, responsePath), choice);
-
-      // Also update metadata
-      await update(ref(db, `campaigns/${campaign}/${clubName}`), {
-        notes: notes,
-        region: clubObj.region,
-        timestamp: new Date().toISOString()
+    // Save to Firebase
+    const path = `responses/${campaign}/${label}/${clubName}`;
+    db.ref(path).set(choice)
+      .then(() => {
+        console.log(`Saved ${choice} for ${clubName} under ${label}`);
+      })
+      .catch(error => {
+        console.error("Firebase error:", error);
       });
 
-      alert(`You selected "${choice}" for "${label}"`);
-      document.getElementById("notes").value = "";
-    } catch (error) {
-      console.error("Firebase write failed:", error);
-      alert("There was an error saving your response. Please try again.");
+    // Update button visual state
+    updateButtonStyles(label, clubName, choice);
+
+    // Refresh summary below
+    updateSummary();
+  }
+
+  function updateButtonStyles(label, clubName, choice) {
+    // Reset styles for all buttons for this label
+    document.querySelectorAll(`[data-label="${label}"]`).forEach(btn => {
+      btn.classList.remove('selected-opt-in', 'selected-opt-out');
+    });
+
+    // Highlight selected button
+    const selectedBtn = document.querySelector(`[data-label="${label}"][data-choice="${choice}"]`);
+    if (selectedBtn) {
+      selectedBtn.classList.add(choice === 'Opt In' ? 'selected-opt-in' : 'selected-opt-out');
     }
   }
+
+  function updateSummary() {
+    const summaryDiv = document.getElementById('summary');
+    summaryDiv.innerHTML = '<h3>Submission Summary</h3>';
+
+    for (const [label, clubs] of Object.entries(window.choiceStore)) {
+      const section = document.createElement('div');
+      section.innerHTML = `<h4>${label}</h4>`;
+      const ul = document.createElement('ul');
+      for (const [club, choice] of Object.entries(clubs)) {
+        const li = document.createElement('li');
+        li.textContent = `${club}: ${choice}`;
+        ul.appendChild(li);
+      }
+      section.appendChild(ul);
+      summaryDiv.appendChild(section);
+    }
+  }
+</script>
+<script>
 // Load and display campaign email previews + buttons
 async function loadCampaignPreviews() {
   const campaign = new URLSearchParams(window.location.search).get("campaign");
