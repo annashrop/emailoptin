@@ -199,8 +199,10 @@ function updateSummary() {
 
       const list = document.createElement('ul');
       const li = document.createElement('li');
-      li.textContent = `${club}: ${choice}`;
+      const timestamp = clubs[club].timestamp || '';
+      li.textContent = `${club}: ${choice} (${new Date(timestamp).toLocaleString()})`;
       list.appendChild(li);
+
 
       container.appendChild(list);
 
@@ -222,17 +224,15 @@ function updateSummary() {
   }
 
   // Include a header row with "Label,Club Name,Choice,Notes"
-  let csvContent = "Label,Club Name,Choice,Notes\n";
+  let csvContent = "Label,Club Name,Choice,Timestamp\n";
 
-  for (const [label, clubs] of Object.entries(window.choiceStore)) {
-    for (const [club, choice] of Object.entries(clubs)) {
-      // Try to find the textarea containing notes for this club
-      const notesElement = document.querySelector(`textarea[data-club="${club}"]`);
-      const notes = notesElement ? notesElement.value.replace(/\n/g, " ").replace(/"/g, '""') : "";
-
-      csvContent += `"${label}","${club}","${choice}","${notes}"\n`;
-    }
+for (const [label, clubs] of Object.entries(window.choiceStore)) {
+  for (const [club, data] of Object.entries(clubs)) {
+    const choice = data.choice;
+    const timestamp = data.timestamp || '';
+    csvContent += `"${label}","${club}","${choice}","${timestamp}"\n`;
   }
+}
 
   // Trigger CSV download
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
