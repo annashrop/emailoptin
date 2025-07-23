@@ -48,9 +48,8 @@
   <div id="Link 1"><h4>Member Campaign</h4><ul></ul></div>
   <div id="Link 2"><h4>Prospect Campaign</h4><ul></ul></div>
 </div>
+
 <script>
-
-
    async function populateClubList() {
     const snapshot = await get(child(dbRef, "masterClubs"));
     if (snapshot.exists()) {
@@ -69,8 +68,7 @@
   }
 
   populateClubList();
-  </script>
-  <script>
+ 
   // Ensure Firebase is initialized here
   const db = firebase.database();
 
