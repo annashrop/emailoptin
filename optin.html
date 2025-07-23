@@ -203,6 +203,8 @@ function updateSummary() {
 <button onclick="exportSummaryToCSV()" style="margin: 20px auto; display: block;">
   Export Summary to CSV
 </button> 
+  </script>
+  <script>
   function exportSummaryToCSV() {
   if (!window.choiceStore || Object.keys(window.choiceStore).length === 0) {
     alert("No selections to export yet.");
