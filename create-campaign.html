@@ -134,61 +134,61 @@ button:hover {
 
 <script>
 function createCampaign() {
-    const campaign = document.getElementById('campaignName').value.trim();
-    const expirationDate = document.getElementById('expirationDate').value;
+  const campaign = document.getElementById('campaignName').value.trim();
+  if (!campaign) {
+    alert("Please enter a campaign name.");
+    return;
+  }
 
-    if (!campaign) {
-        alert("Please enter a campaign name.");
-        return;
-    }
+  const expirationDate = document.getElementById('expirationDate')?.value || "";
 
-    const links = [];
+  const label1 = document.getElementById('linkLabel1').value.trim();
+  const url1 = document.getElementById('linkUrl1').value.trim();
+  const subject1 = document.getElementById('linkSubject1').value.trim();
+  const preheader1 = document.getElementById('linkPreheader1').value.trim();
 
-    const label1 = document.getElementById('linkLabel1').value.trim();
-    const url1 = document.getElementById('linkUrl1').value.trim();
-    const subject1 = document.getElementById('linkSubject1').value.trim();
-    const preheader1 = document.getElementById('linkPreheader1').value.trim();
+  const label2 = document.getElementById('linkLabel2').value.trim();
+  const url2 = document.getElementById('linkUrl2').value.trim();
+  const subject2 = document.getElementById('linkSubject2').value.trim();
+  const preheader2 = document.getElementById('linkPreheader2').value.trim();
 
-    if (label1 && url1) {
-        links.push({
-            label: label1,
-            url: url1,
-            subject: subject1,
-            preheader: preheader1
-        });
-    }
+  const links = [];
 
-    const label2 = document.getElementById('linkLabel2').value.trim();
-    const url2 = document.getElementById('linkUrl2').value.trim();
-    const subject2 = document.getElementById('linkSubject2').value.trim();
-    const preheader2 = document.getElementById('linkPreheader2').value.trim();
-
-    if (label2 && url2) {
-        links.push({
-            label: label2,
-            url: url2,
-            subject: subject2,
-            preheader: preheader2
-        });
-    }
-
-    db.ref('campaigns/' + campaign).set({
-        createdAt: new Date().toISOString(),
-        expirationDate: expirationDate,
-        links: links
-    }).then(() => {
-        const baseUrl = "https://annashrop.github.io/emailoptin/optin.html";
-        const fullLink = `${baseUrl}?campaign=${encodeURIComponent(campaign)}`;
-
-        document.getElementById('linkOutput').innerHTML = `
-            <p><strong>Campaign Created!</strong></p>
-            <a href="${fullLink}" target="_blank">${fullLink}</a><br><br>
-            <button onclick="copyLink('${fullLink}')">Copy Link</button>
-        `;
-    }).catch(error => {
-        console.error("Error creating campaign:", error);
-        alert("Something went wrong. Check console for details.");
+  if (label1 && url1) {
+    links.push({
+      label: label1,
+      url: url1,
+      subject: subject1,
+      preheader: preheader1
     });
+  }
+
+  if (label2 && url2) {
+    links.push({
+      label: label2,
+      url: url2,
+      subject: subject2,
+      preheader: preheader2
+    });
+  }
+
+  db.ref('campaigns/' + campaign).set({
+    createdAt: new Date().toISOString(),
+    expirationDate: expirationDate,
+    links: links
+  }).then(() => {
+    const baseUrl = "https://annashrop.github.io/emailoptin/optin.html";
+    const fullLink = `${baseUrl}?campaign=${encodeURIComponent(campaign)}`;
+
+    document.getElementById('linkOutput').innerHTML = `
+      <p><strong>Campaign Created!</strong></p>
+      <a href="${fullLink}" target="_blank">${fullLink}</a><br><br>
+      <button onclick="copyLink('${fullLink}')">Copy Link</button>
+    `;
+  }).catch(error => {
+    console.error("Error creating campaign:", error);
+    alert("Something went wrong. Check console for details.");
+  });
 }
 
 function copyLink(link) {
