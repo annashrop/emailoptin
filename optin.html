@@ -138,24 +138,49 @@ loadCampaignPreviews();
   // Expose submitChoice to global scope for button onclick
   window.submitChoice = submitChoice;
 
-    function updateSummary() {
-  const memberList = document.querySelector('#memberSummary ul');
-  const prospectList = document.querySelector('#prospectSummary ul');
-  memberList.innerHTML = '';
-  prospectList.innerHTML = '';
+function updateSummary() {
+  const memberSummary = document.getElementById('memberSummary');
+  const prospectSummary = document.getElementById('prospectSummary');
+  memberSummary.innerHTML = '';
+  prospectSummary.innerHTML = '';
 
+  // Member Summary
   for (const [label, data] of Object.entries(window.choiceStore.Member)) {
+    const container = document.createElement('div');
+    container.classList.add('summary-block');
+
+    const title = document.createElement('h3');
+    title.textContent = `Summary for ${label}`;
+    container.appendChild(title);
+
+    const list = document.createElement('ul');
     const li = document.createElement('li');
     li.textContent = `${label}: ${data.choice}`;
-    memberList.appendChild(li);
+    list.appendChild(li);
+
+    container.appendChild(list);
+    memberSummary.appendChild(container);
   }
 
+  // Prospect Summary
   for (const [label, data] of Object.entries(window.choiceStore.Prospect)) {
+    const container = document.createElement('div');
+    container.classList.add('summary-block');
+
+    const title = document.createElement('h3');
+    title.textContent = `Summary for ${label}`;
+    container.appendChild(title);
+
+    const list = document.createElement('ul');
     const li = document.createElement('li');
     li.textContent = `${label}: ${data.choice}`;
-    prospectList.appendChild(li);
+    list.appendChild(li);
+
+    container.appendChild(list);
+    prospectSummary.appendChild(container);
   }
 }
+
 
 </script>
 
