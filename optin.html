@@ -24,7 +24,9 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
   const dbRef = db.ref();
-  const { get, child } = firebase.database;  
+  const get = (ref) => ref.get();
+  const child = (parentRef, childPath) => parentRef.child(childPath);
+
 
   let allClubs = [];
 </script>
