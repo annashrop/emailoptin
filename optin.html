@@ -206,24 +206,28 @@ function updateSummary() {
 
  
   function exportSummaryToCSV() {
-  if (!window.choiceStore || Object.keys(window.choiceStore).length === 0) {
+  if (window.choiceStore == null || Object.keys(window.choiceStore).length === 0) {
     alert("No selections to export yet.");
     return;
   }
 
-  let csvContent = "Label,Club Name,Choice\n";
+  // Include a header row with "Label,Club Name,Choice,Notes"
+  let csvContent = "Label,Club Name,Choice,Notes\n";
 
   for (const [label, clubs] of Object.entries(window.choiceStore)) {
     for (const [club, choice] of Object.entries(clubs)) {
-      csvContent += `"${label}","${club}","${choice}"\n`;
+      // Try to find the textarea containing notes for this club
+      const notesElement = document.querySelector(`textarea[data-club="${club}"]`);
+      const notes = notesElement ? notesElement.value.replace(/\n/g, " ").replace(/"/g, '""') : "";
+
+      csvContent += `"${label}","${club}","${choice}","${notes}"\n`;
     }
   }
 
-  // Create and trigger download
+  // Trigger CSV download
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
-
   link.setAttribute("href", url);
   link.setAttribute("download", "Campaign_Selections.csv");
   link.style.display = "none";
@@ -231,6 +235,7 @@ function updateSummary() {
   link.click();
   document.body.removeChild(link);
 }
+
 
 
 </script>
