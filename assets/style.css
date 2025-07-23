@@ -111,6 +111,15 @@ button:hover {
     cursor: pointer;
     transition: background 0.3s ease;
 }
+button.selected-opt-in {
+  background-color: #4CAF50;
+  color: white;
+}
+
+button.selected-opt-out {
+  background-color: #E53935;
+  color: white;
+}
 
 iframe {
     width: 100%;
