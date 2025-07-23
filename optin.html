@@ -23,6 +23,7 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
+  const dbRef = db.ref();
 </script>
 
 </head>
@@ -45,8 +46,8 @@
 </table>
 <div id="summarySection">
   <h3>Selections Summary</h3>
-  <div id="Link 1"><h4>Member Campaign</h4><ul></ul></div>
-  <div id="Link 2"><h4>Prospect Campaign</h4><ul></ul></div>
+  <div id="memberSummary"></div>
+  <div id="prospectSummary"></div>
 </div>
 
 <script>
