@@ -226,7 +226,7 @@ function updateSummary() {
       const list = document.createElement('ul');
       const li = document.createElement('li');
       const timestamp = clubs[club].timestamp || '';
-      li.textContent = `${club}: ${choice} (${new Date(timestamp).toLocaleString()})`;
+      li.textContent = `${club}: ${choice.choice} (${new Date(choice.timestamp).toLocaleString()})`;
       list.appendChild(li);
 
 
