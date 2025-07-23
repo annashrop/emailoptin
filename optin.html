@@ -2,6 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <style>
+    .preview-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.preview-card {
+  flex: 1 1 48%;
+  box-sizing: border-box;
+}
+</style>
 <title>Campaign Opt-In</title>
 <link rel="stylesheet" href="assets/style.css">
   <!-- Firebase Compat SDK -->
@@ -38,7 +52,8 @@
 <p id="campaignName"></p>
 <p id="expirationDisplay" style="font-weight: bold; color: #cc0000; margin-top: 10px;"></p>
 
-<div id="campaignLinks"></div><br> <!-- ADD THIS -->
+<div id="campaignLinks" class="preview-container"></div>
+
 
 <input type="text" id="clubInput" placeholder="Start typing your club name..." list="clubList" />
 <datalist id="clubList"></datalist>
@@ -171,7 +186,6 @@ links.forEach(link => {
   const preheader = link.preheader || 'N/A';
 
   html += `
-    <div class="preview-card" style="flex:1 1 45%;border:1px solid #ccc;border-radius:8px;padding:10px;">
       <h4>${link.label}</h4>
       <p><strong>Subject Line:</strong> ${subject}</p>
       <p><strong>Preheader:</strong> ${preheader}</p>
