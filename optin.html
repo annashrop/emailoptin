@@ -60,7 +60,6 @@
 
 <input type="text" id="clubInput" placeholder="Start typing your club name..." list="clubList" />
 <datalist id="clubList"></datalist>
-<textarea id="notes" placeholder="Add any notes here..."></textarea>
 
 
 
@@ -114,8 +113,10 @@
 }
 window.choiceStore[label][clubName] = {
   choice: choice,
+  notes: notes,
   timestamp: new Date().toISOString()
 };
+
 
 const noteField = document.querySelector(`textarea[data-label="${label}"]`);
 const notes = noteField ? noteField.value.trim() : "";
@@ -258,13 +259,14 @@ function updateSummary() {
   }
 
   // Include a header row with "Label,Club Name,Choice,Notes"
-  let csvContent = "Label,Club Name,Choice,Timestamp\n";
+  let csvContent = "Label,Club Name,Choice,Notes,Timestamp\n";
 
 for (const [label, clubs] of Object.entries(window.choiceStore)) {
   for (const [club, data] of Object.entries(clubs)) {
     const choice = data.choice;
     const timestamp = data.timestamp || '';
-    csvContent += `"${label}","${club}","${choice}","${timestamp}"\n`;
+    const notes = data.notes || '';
+    csvContent += `"${label}","${club}","${choice}","${notes}","${timestamp}"\n`;
   }
 }
 
