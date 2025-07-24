@@ -107,8 +107,11 @@
       return;
     }
 
-    // Save choice in global memory
-    if (!window.choiceStore[label]) {
+const noteField = document.querySelector(`textarea[data-label="${label}"]`);
+const notes = noteField ? noteField.value.trim() : "";
+
+// Save choice in global memory
+if (!window.choiceStore[label]) {
   window.choiceStore[label] = {};
 }
 window.choiceStore[label][clubName] = {
@@ -117,9 +120,6 @@ window.choiceStore[label][clubName] = {
   timestamp: new Date().toISOString()
 };
 
-
-const noteField = document.querySelector(`textarea[data-label="${label}"]`);
-const notes = noteField ? noteField.value.trim() : "";
 
 const path = `responses/${campaign}/${label}/${clubName}`;
 db.ref(path).set({
@@ -235,7 +235,7 @@ function updateSummary() {
       const list = document.createElement('ul');
       const li = document.createElement('li');
       const timestamp = clubs[club].timestamp || '';
-      li.textContent = `${club}: ${choice.choice} (${new Date(choice.timestamp).toLocaleString()})`;
+      li.textContent = `${club}: ${choice.choice} (${new Date(choice.timestamp).toLocaleString()})${choice.notes ? ' - Notes: ' + choice.notes : ''}`;
       list.appendChild(li);
 
 
